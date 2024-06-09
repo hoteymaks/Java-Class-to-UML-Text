@@ -18,7 +18,7 @@ public class Main {
 
             while (true) {
                 String line = s.nextLine();
-                if (line.equalsIgnoreCase("done")) break;
+                if (line.trim().equalsIgnoreCase("done")) break;
                 umlLines.add(line);
             }
 
@@ -55,11 +55,21 @@ public class Main {
                             result = modifier + methodName + "(" + params + "): " + returnType;
                         }
                     } else {
-                        String fieldName = line.split(" ")[2];
-                        String fieldType = line.split(" ")[1];
+                        boolean modifierEmpty = false;
+                        String fieldName;
+                        String fieldType;
                         String modifier = "+ ";
-                        if (line.contains("private")) modifier = "- ";
-                        else if (line.contains("protected")) modifier = "# ";
+                        if (line.split(" ").length == 2) modifierEmpty = true;
+                        if (!modifierEmpty) {
+                            fieldName = line.split(" ")[2];
+                            fieldType = line.split(" ")[1];
+                            if (line.contains("private")) modifier = "- ";
+                            else if (line.contains("protected")) modifier = "# ";
+                        } else {
+                            fieldName = line.split(" ")[1];
+                            fieldType = line.split(" ")[0];
+                            modifier = "  ";
+                        }
                         result = modifier + fieldName + ": " + fieldType;
                     }
                     System.out.println(result);
@@ -69,7 +79,7 @@ public class Main {
             }
 
             if (!errorLines.isEmpty()) {
-                System.out.print("\n\nCouldn't process " + errorLines.size() + " lines.\nDo you want to see them? (yes/no):");
+                System.out.print("\n\n(!) Couldn't process " + errorLines.size() + " lines.\nDo you want to see them? (yes/no):");
                 String answer = s.next();
                 if (answer.equals("yes")) for (String errorLine : errorLines) System.out.println(errorLine);
             }
